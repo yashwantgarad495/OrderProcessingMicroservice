@@ -1,4 +1,5 @@
 ﻿using OrderProcessingMicroservice.BusinessRules;
+using OrderProcessingMicroservice.DataAccess;
 using OrderProcessingMicroservice.Models;
 using OrderProcessingMicroservice.ViewModels;
 using System;
@@ -21,7 +22,13 @@ namespace OrderProcessingMicroservice.Repositories
     public class ProcessOrderRepository : BaseRepository, IProcessOrderRepository
     {
 
-      
+        private IDataAccessOrder _orderProcessingDal;
+
+        public ProcessOrderRepository(IDataAccessOrder orderDataAccess)
+        {
+            _orderProcessingDal = orderDataAccess;
+        }
+
 
         /// <summary>
         /// Get order by id
