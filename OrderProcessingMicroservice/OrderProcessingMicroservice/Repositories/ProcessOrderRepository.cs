@@ -37,8 +37,8 @@ namespace OrderProcessingMicroservice.Repositories
         /// <returns></returns>
         public async Task<Order> GetOrderByID(int id)
         {
-            Order orderDetials = new Order();
 
+            Order orderDetials = await _orderProcessingDal.GetOrderByID(id);
             try
             {
                 //TODO : Filter record by id and return 
@@ -62,7 +62,7 @@ namespace OrderProcessingMicroservice.Repositories
 
             //TODO : returns all orders from backend 
 
-            List<Order> ordersDetials = new List<Order>();
+            List<Order> ordersDetials = await _orderProcessingDal.GetAllOrders();
 
             return ordersDetials;
         }
@@ -74,10 +74,13 @@ namespace OrderProcessingMicroservice.Repositories
         {
 
             //TODO : perform DB and payment opearation. 
-
+           bool isAdded= await _orderProcessingDal.Add(orderReuqest);
             //apply business rule after payment processed
-            bool IsBusinessRuleApplied = await ApplyBusineesRule(orderReuqest);
-            return true;
+            if (isAdded)
+            {
+                bool IsBusinessRuleApplied = await ApplyBusineesRule(orderReuqest);
+            }
+            return isAdded;
         }
 
         /// <summary>
@@ -88,8 +91,8 @@ namespace OrderProcessingMicroservice.Repositories
         {
 
             //TODO : update order into database after changes. 
-
-            return true;
+            bool isUpdated = await _orderProcessingDal.Update(orderReuqest);
+            return isUpdated;
         }
         /// <summary>
         /// Delete specific order by id 
@@ -99,8 +102,9 @@ namespace OrderProcessingMicroservice.Repositories
         {
 
             //TODO : Delete order into database after changes. 
+            bool isDeleted = await _orderProcessingDal.Delete(orderId);
 
-            return true;
+            return isDeleted;
         }
         private async Task<bool> ApplyBusineesRule(Order orderRequest)
         {
