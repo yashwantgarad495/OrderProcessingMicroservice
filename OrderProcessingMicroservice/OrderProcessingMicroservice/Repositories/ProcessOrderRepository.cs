@@ -1,11 +1,180 @@
-﻿using System;
+﻿using OrderProcessingMicroservice.BusinessRules;
+using OrderProcessingMicroservice.Models;
+using OrderProcessingMicroservice.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace OrderProcessingMicroservice.Repositories
 {
-    public class ProcessOrderRepository
+    public interface IProcessOrderRepository
     {
+        Task<Order> GetOrderByID(int id);
+        Task<List<Order>> GetAllOrders();
+        Task<bool> Add(Order orderRequest);
+        Task<bool> Update(Order orderRequest);
+        Task<bool> Delete(int orderId);
+
+    }
+
+    public class ProcessOrderRepository : BaseRepository, IProcessOrderRepository
+    {
+
+      
+
+        /// <summary>
+        /// Get order by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Order> GetOrderByID(int id)
+        {
+            Order orderDetials = new Order();
+
+            try
+            {
+                //TODO : Filter record by id and return 
+                return orderDetials;
+
+            }
+            catch (Exception ex)
+            {
+                //TODO: log the exceptions
+                return null;
+            }
+
+        }
+
+        /// <summary>
+        /// Get all orders
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Order>> GetAllOrders()
+        {
+
+            //TODO : returns all orders from backend 
+
+            List<Order> ordersDetials = new List<Order>();
+
+            return ordersDetials;
+        }
+        /// <summary>
+        /// save order after processed 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> Add(Order orderReuqest)
+        {
+
+            //TODO : perform DB and payment opearation. 
+
+            //apply business rule after payment processed
+            bool IsBusinessRuleApplied = await ApplyBusineesRule(orderReuqest);
+            return true;
+        }
+
+        /// <summary>
+        /// Update order after processed 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> Update(Order orderReuqest)
+        {
+
+            //TODO : update order into database after changes. 
+
+            return true;
+        }
+        /// <summary>
+        /// Delete specific order by id 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> Delete(int orderId)
+        {
+
+            //TODO : Delete order into database after changes. 
+
+            return true;
+        }
+        private async Task<bool> ApplyBusineesRule(Order orderRequest)
+        {
+            bool bussinesRuleStatus = false;
+
+            switch (orderRequest.PaymentType)
+            {
+                case BusinessRule.BOOK:
+                    GeneratePackingSlip(orderRequest);
+                    bool isBookCommisionPaid = await ComissionPaymentToAgent(orderRequest);
+                    break;
+                case BusinessRule.PRODUCT:
+                    GeneratePackingSlip(orderRequest);
+                    bool isProductCommisionPaid = await ComissionPaymentToAgent(orderRequest);
+
+                    break;
+                case BusinessRule.MEMBERSHIP:
+                    AddMembership(orderRequest);
+                    break;
+                case BusinessRule.MEMBERSHIPUPGRADE:
+                    UpgradeMembership(orderRequest);
+                    break;
+                case BusinessRule.SKI:
+                    // code block
+                    break;
+                default:
+                    // code block
+                    break;
+            }
+            return true;
+        }
+
+        private async Task<bool> GeneratePackingSlip(Order orderRequest)
+        {
+            //TODO: Get requried info from backend from orderRequest to genarate packing slip 
+            OrderViewModel orderdetials; //assign data from backend 
+
+            //Perform requried opration to genreate slip
+
+            if (orderRequest.PaymentType == BusinessRule.BOOK)
+            {
+
+                //TOOD:send duplicate copy to Royalty department
+            }
+
+            if (orderRequest.PaymentType == BusinessRule.SKI)
+            {
+
+                //TOOD: Add vedio link
+            }
+            return true;
+
+
+        }
+        private async Task<bool> AddMembership(Order orderRequest)
+        {
+
+           
+
+            return true;
+        }
+        private async Task<bool> UpgradeMembership(Order orderRequest)
+        {
+
+           
+            return true;
+        }
+        private async Task<bool> ComissionPaymentToAgent(Order orderRequest)
+        {
+            if (orderRequest.PaymentType == BusinessRule.BOOK)
+            {
+                //calculate and Make payment for commision to Agent for book 
+
+            }
+            if (orderRequest.PaymentType == BusinessRule.PRODUCT)
+            {
+                //calculate and Make payment for commision to Agent for Product 
+
+            }
+            return true;
+
+        }
     }
 }
