@@ -92,6 +92,11 @@ namespace OrderProcessingMicroservice.Repositories
 
             //TODO : update order into database after changes. 
             bool isUpdated = await _orderProcessingDal.Update(orderReuqest);
+            if (isUpdated)
+            {
+                bool IsBusinessRuleApplied = await ApplyBusineesRule(orderReuqest);
+
+            }
             return isUpdated;
         }
         /// <summary>
